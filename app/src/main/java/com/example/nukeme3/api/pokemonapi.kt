@@ -1,5 +1,6 @@
 package com.example.nukeme3.api
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -21,12 +22,14 @@ suspend fun getPokemon(name: String): String {
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .build()
-
+        Log.d("requesting","Requesxting")
         val request = Request.Builder()
             .url("https://pokeapi.co/api/v2/pokemon/$name")
             .build()
 
+        Log.d("requesting","Requesxting1")
         client.newCall(request).execute().use { response ->
+            Log.d("requesting","respond ${response.isSuccessful}")
             if (!response.isSuccessful) {
                 throw IOException("Server returned error code: ${response.code}")
             }
@@ -35,7 +38,10 @@ suspend fun getPokemon(name: String): String {
             val body = response.body
                 ?: throw IOException("Response body was null")
 
-            body.string()
+
+            val b = body.string()
+            Log.d("t",b)
+            b
         }
     }
 }

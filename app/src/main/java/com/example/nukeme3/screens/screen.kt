@@ -11,8 +11,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.nukeme3.api.getPokemon
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException // <-- FIX: Use java.io.IOException instead of okio
 
@@ -22,20 +25,32 @@ sealed interface UiState {
     data class Error(val message: String) : UiState
 }
 
-@Composable
-fun Screen(pokemon: String) {
-    var uiState by remember { mutableStateOf<UiState>(UiState.Loading) }
-// screens/Screen.kt
-    LaunchedEffect(Unit) {
-        try {
-            // Called directly without withContext because getPokemon handles its own thread
-            val details = getPokemon("pikachu")
-            uiState = UiState.Success(details)
-        } catch (e: Exception) {
-            Log.e("Screen", "Error loading pokemon", e)
-            uiState = UiState.Error("Failed to Load Pokemon: ${e.message}")
+class MyViewModel : ViewModel() {
+    var uiState: UiState by mutableStateOf(UiState.Loading)
+        private set
+
+    init {
+        loadPokemon()
+    }
+
+    fun loadPokemon() {
+        viewModelScope.launch {
+            Log.d("123", "hill")
+            try {
+                val details = getPokemon("pikachu") // If this is a suspend function
+                Log.d("hi", details)
+                uiState = UiState.Success(details)
+            } catch (e: Exception) {
+                Log.e("Screen", "Error loading pokemon", e)
+                uiState = UiState.Error("Failed to Load Pokemon: ${e.message}")
+            }
         }
     }
+}
+
+@Composable
+fun Screen(pokemon: String, model: MyViewModel = MyViewModel()) {
+    var uiState = model.uiState
 
     Box(modifier = Modifier.fillMaxSize()) {
         when (val state = uiState) {
