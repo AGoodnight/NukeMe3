@@ -48,6 +48,12 @@ dependencies {
     implementation(libs.compose.material.icons.extended)
     // Apply the platform BOM using the catalog reference
     implementation(platform(libs.okhttp.bom))
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.kotlinx.serialization)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
 
     // Reference the artifact definitions without specifying versions
     implementation(libs.okhttp)

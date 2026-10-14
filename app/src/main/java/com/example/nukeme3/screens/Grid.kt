@@ -14,6 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import coil3.compose.AsyncImage
+import com.example.nukeme3.api.PokemonApi
+import com.example.nukeme3.api.PokemonList
+import com.example.nukeme3.api.PokemonListItem
+import kotlinx.coroutines.flow.MutableStateFlow
 
 val pokemonNames = arrayOf(
     "cyndaquil",
@@ -26,6 +32,12 @@ val pokemonNames = arrayOf(
     "chandelure",
     "mimikyu"
 )
+
+
+
+class GridViewModel(private val gridItems: PokemonList): ViewModel(){
+    private val _currentList = MutableStateFlow<>
+}
 
 @Composable()
 fun GridScreen(navToSub:(pokemon:String)->Unit){
@@ -52,8 +64,9 @@ fun MyCell(pokemon:String,navToSub:(pokemon:String)->Unit){
             defaultElevation = 6.dp
         )
     ) {
+
         Text(
-            text = "Elevated",
+            text = pokemon,
             modifier = Modifier
                 .padding(16.dp),
             textAlign = TextAlign.Center,
